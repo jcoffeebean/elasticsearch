@@ -20,6 +20,9 @@
 package org.elasticsearch.transport;
 
 import org.elasticsearch.Version;
+import org.elasticsearch.action.benchmark.AbstractBenchmarkService;
+import org.elasticsearch.action.benchmark.BenchmarkCoordinatorService;
+import org.elasticsearch.action.benchmark.BenchmarkExecutorService;
 import org.elasticsearch.action.benchmark.abort.BenchmarkAbortAction;
 import org.elasticsearch.action.benchmark.pause.BenchmarkPauseAction;
 import org.elasticsearch.action.benchmark.resume.BenchmarkResumeAction;
@@ -129,6 +132,9 @@ public class ActionNamesTests extends ElasticsearchIntegrationTest {
         post_1_4_actions.add(BenchmarkPauseAction.NAME);
         post_1_4_actions.add(BenchmarkResumeAction.NAME);
         post_1_4_actions.add(BenchmarkAbortAction.NAME);
+        post_1_4_actions.add(BenchmarkCoordinatorService.BenchmarkDefinitionRequestHandler.ACTION);
+        post_1_4_actions.add(AbstractBenchmarkService.NodeStateUpdateRequestHandler.ACTION);
+        post_1_4_actions.add(BenchmarkExecutorService.BenchmarkStatusRequestHandler.ACTION);
         post_1_4_actions.add(ExistsAction.NAME);
         post_1_4_actions.add(ExistsAction.NAME + "[s]");
     }

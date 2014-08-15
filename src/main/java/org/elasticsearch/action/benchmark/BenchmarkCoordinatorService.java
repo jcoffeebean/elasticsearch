@@ -136,6 +136,11 @@ public class BenchmarkCoordinatorService extends AbstractBenchmarkService<Benchm
                 continue;
             }
 
+            if (allNodesFailed(entry)) {
+                ics.onFailed.onStateChange(entry, new ElasticsearchException("All nodes failed"));
+                continue;
+            }
+
             switch (entry.state()) {
                 case INITIALIZING:
                     if (allNodesReady(entry)) {
@@ -608,7 +613,14 @@ public class BenchmarkCoordinatorService extends AbstractBenchmarkService<Benchm
 
         private void respond(final String benchmarkId, final Throwable cause) {
             benchmarks.remove(benchmarkId);
-            ics.onFailure(cause);
+
+            if (ics.response == null) {
+                ics.response = new BenchmarkStartResponse(benchmarkId);
+            }
+
+            ics.response.state(BenchmarkStartResponse.State.FAILED);
+            ics.response.errors(cause.getMessage());
+            ics.onResponse();
         }
     }
 
@@ -704,6 +716,10 @@ public class BenchmarkCoordinatorService extends AbstractBenchmarkService<Benchm
         }
     }
 
+    private boolean allNodesFailed(final BenchmarkMetaData.Entry entry) {
+        return checkAllNodeStates(entry, BenchmarkMetaData.Entry.NodeState.FAILED);
+    }
+
     private boolean allNodesReady(final BenchmarkMetaData.Entry entry) {
         return checkAllNodeStates(entry, BenchmarkMetaData.Entry.NodeState.READY);
     }
@@ -758,7 +774,7 @@ public class BenchmarkCoordinatorService extends AbstractBenchmarkService<Benchm
      */
     public class BenchmarkDefinitionRequestHandler extends BaseTransportRequestHandler<BenchmarkDefinitionTransportRequest> {
 
-        static final String ACTION = "indices:data/benchmark/node/definition";
+        public static final String ACTION = "indices:data/benchmark/node/definition";
 
         @Override
         public BenchmarkDefinitionTransportRequest newInstance() {

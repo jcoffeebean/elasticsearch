@@ -181,7 +181,7 @@ public abstract class AbstractBenchmarkService<T> extends AbstractLifecycleCompo
 
     public class NodeStateUpdateRequestHandler extends BaseTransportRequestHandler<NodeStateUpdateTransportRequest> {
 
-        static final String ACTION = "indices:data/benchmark/node/state/update";
+        public static final String ACTION = "indices:data/benchmark/node/state/update";
 
         @Override
         public NodeStateUpdateTransportRequest newInstance() {

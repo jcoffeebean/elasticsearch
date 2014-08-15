@@ -308,7 +308,7 @@ public class BenchmarkExecutorService extends AbstractBenchmarkService<Benchmark
      */
     public class BenchmarkStatusRequestHandler extends BaseTransportRequestHandler<BenchmarkStatusTransportRequest> {
 
-        static final String ACTION = "indices:data/benchmark/node/status";
+        public static final String ACTION = "indices:data/benchmark/node/status";
 
         @Override
         public BenchmarkStatusTransportRequest newInstance() {
