@@ -137,6 +137,7 @@ public class BenchmarkCoordinatorService extends AbstractBenchmarkService<Benchm
             }
 
             if (allNodesFailed(entry)) {
+                logger.error("benchmark [{}]: all nodes failed", entry.benchmarkId());
                 ics.onFailed.onStateChange(entry, new ElasticsearchException("All nodes failed"));
                 continue;
             }

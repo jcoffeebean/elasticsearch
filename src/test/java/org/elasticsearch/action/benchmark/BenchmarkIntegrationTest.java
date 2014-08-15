@@ -51,7 +51,7 @@ import static org.hamcrest.Matchers.*;
 /**
  * Integration tests for benchmark API
  */
-@ElasticsearchIntegrationTest.ClusterScope(scope = ElasticsearchIntegrationTest.Scope.SUITE)
+@ElasticsearchIntegrationTest.ClusterScope(scope = ElasticsearchIntegrationTest.Scope.TEST)
 public class BenchmarkIntegrationTest extends AbstractBenchmarkTest {
 
     protected synchronized Settings nodeSettings(int ordinal) {
