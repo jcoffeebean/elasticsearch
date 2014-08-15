@@ -241,20 +241,21 @@ public class BenchmarkExecutorService extends AbstractBenchmarkService<Benchmark
             // Update our internal bookkeeping
             benchmarks.get(response.benchmarkId).request = response.benchmarkStartRequest;
 
+            BenchmarkMetaData.Entry.NodeState newNodeState = BenchmarkMetaData.Entry.NodeState.READY;
+
             try {
                 // Initialize the benchmark state inside the executor
                 executor.create(response.benchmarkStartRequest);
 
             } catch (Throwable t) {
-
-                logger.error("XXX FAILED TO CREATE BENCHMARK", t);
-                // NOCOMMIT - Make sure this is handled properly
+                logger.error("benchmark [{}]: failed to create", t, response.benchmarkId);
+                benchmarks.remove(benchmarkId);
+                newNodeState = BenchmarkMetaData.Entry.NodeState.FAILED;
             }
 
-            // Notify the master we are ready to start executing
+            // Notify the master that either we are ready to start executing or that we have failed to initialize
             final NodeStateUpdateResponseHandler handler = new NodeStateUpdateResponseHandler(benchmarkId);
-            final NodeStateUpdateTransportRequest update =
-                    new NodeStateUpdateTransportRequest(response.benchmarkId, response.nodeId, BenchmarkMetaData.Entry.NodeState.READY);
+            final NodeStateUpdateTransportRequest update = new NodeStateUpdateTransportRequest(response.benchmarkId, response.nodeId, newNodeState);
 
             transportService.sendRequest(master(), BenchmarkCoordinatorService.NodeStateUpdateRequestHandler.ACTION, update, handler);
         }
@@ -307,7 +308,7 @@ public class BenchmarkExecutorService extends AbstractBenchmarkService<Benchmark
      */
     public class BenchmarkStatusRequestHandler extends BaseTransportRequestHandler<BenchmarkStatusTransportRequest> {
 
-        static final String ACTION = "benchmark/node/status";
+        static final String ACTION = "indices:data/benchmark/node/status";
 
         @Override
         public BenchmarkStatusTransportRequest newInstance() {
