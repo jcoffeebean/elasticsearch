@@ -33,6 +33,7 @@ import org.elasticsearch.common.Strings;
 import org.elasticsearch.common.collect.Tuple;
 import org.elasticsearch.test.ElasticsearchIntegrationTest;
 import org.junit.Before;
+import org.junit.Ignore;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -47,6 +48,7 @@ import static org.hamcrest.Matchers.equalTo;
 /**
  * Abstract base class for benchmark integration tests.
  */
+@Ignore
 public class AbstractBenchmarkTest extends ElasticsearchIntegrationTest {
 
     protected int numExecutorNodes = 0;
