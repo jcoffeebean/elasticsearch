@@ -69,8 +69,8 @@ setup:
   - match:  { benchmark.status:   "COMPLETED"         }
 
   - match:  { benchmark.competitors.test_competitor_1.summary.concurrency:                3         }
-  - match:  { benchmark.competitors.test_competitor_1.summary.total_iterations:           3         }
-  - match:  { benchmark.competitors.test_competitor_1.summary.completed_iterations:       3         }
+  - match:  { benchmark.competitors.test_competitor_1.summary.total_requested_iterations: 3         }
+  - match:  { benchmark.competitors.test_competitor_1.summary.total_completed_iterations: 3         }
   - match:  { benchmark.competitors.test_competitor_1.summary.multiplier:                 5         }
   - gte:    { benchmark.competitors.test_competitor_1.summary.avg_warmup_time:            0.0       }
   - gte:    { benchmark.competitors.test_competitor_1.summary.statistics.min:             0         }
@@ -88,8 +88,8 @@ setup:
   - length: { benchmark.competitors.test_competitor_1.iterations:                         3         }
 
   - match:  { benchmark.competitors.test_competitor_2.summary.concurrency:                1         }
-  - match:  { benchmark.competitors.test_competitor_2.summary.total_iterations:           3         }
-  - match:  { benchmark.competitors.test_competitor_2.summary.completed_iterations:       3         }
+  - match:  { benchmark.competitors.test_competitor_2.summary.total_requested_iterations: 3         }
+  - match:  { benchmark.competitors.test_competitor_2.summary.total_completed_iterations: 3         }
   - match:  { benchmark.competitors.test_competitor_2.summary.multiplier:                 5         }
   - gte:    { benchmark.competitors.test_competitor_2.summary.avg_warmup_time:            0.0       }
   - gte:    { benchmark.competitors.test_competitor_2.summary.statistics.min:             0         }
