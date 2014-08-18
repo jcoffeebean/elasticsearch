@@ -199,15 +199,6 @@ public class BenchmarkExecutor {
                 final long[] docBuckets   = new long[numMeasurements];
 
                 for (int i = 0; i < settings.iterations(); i++) {
-                    /*
-                    if (settings.allowCacheClearing() && settings.clearCaches() != null) {
-                        try {
-                            client.admin().indices().clearCache(settings.clearCaches()).get();
-                        } catch (ExecutionException e) {
-                            throw new BenchmarkExecutionException("Failed to clear caches", e);
-                        }
-                    }
-                    */
                     // Run the iteration
                     CompetitionIteration ci =
                             iterate(request.benchmarkId(),competitor, searchRequests, timeBuckets,

@@ -124,7 +124,7 @@ public class BenchmarkCoordinatorService extends AbstractBenchmarkService<Benchm
             final InternalCoordinatorState ics = benchmarks.get(entry.benchmarkId());
             if (ics == null) {
                 // Remove any unknown benchmark state from the cluster metadata
-                logger.warn("unknown benchmark in cluster metadata [{}]", entry.benchmarkId());
+                logger.warn("benchmark [{}]: unknown benchmark in cluster metadata", entry.benchmarkId());
                 manager.clear(entry.benchmarkId(), new ActionListener() {
                     @Override
                     public void onResponse(Object o) { /* no-op */ }

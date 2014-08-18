@@ -20,7 +20,6 @@
 package org.elasticsearch.action.benchmark.competition;
 
 import org.elasticsearch.action.ActionResponse;
-import org.elasticsearch.action.benchmark.competition.CompetitionIteration;
 import org.elasticsearch.common.io.stream.StreamInput;
 import org.elasticsearch.common.io.stream.StreamOutput;
 import org.elasticsearch.common.io.stream.Streamable;
@@ -36,7 +35,7 @@ public class CompetitionNodeResult extends ActionResponse implements Streamable 
 
     private String competitionName;
     private String nodeName;
-    private int totalIterations = 0;
+    private int requestedIterations = 0;
     private int completedIterations = 0;
     private int totalExecutedQueries = 0;
     private long warmUpTime = 0;
@@ -46,11 +45,11 @@ public class CompetitionNodeResult extends ActionResponse implements Streamable 
         iterations = new ArrayList<>();
     }
 
-    public CompetitionNodeResult(String competitionName, String nodeName, int totalIterations, List<CompetitionIteration> iterations) {
+    public CompetitionNodeResult(String competitionName, String nodeName, int requestedIterations, List<CompetitionIteration> iterations) {
         this.competitionName = competitionName;
         this.nodeName = nodeName;
         this.iterations = iterations;
-        this.totalIterations = totalIterations;
+        this.requestedIterations = requestedIterations;
     }
 
     public String competitionName() {
@@ -61,8 +60,8 @@ public class CompetitionNodeResult extends ActionResponse implements Streamable 
         return nodeName;
     }
 
-    public int totalIterations() {
-        return totalIterations;
+    public int requestedIterations() {
+        return requestedIterations;
     }
 
     public int completedIterations() {
@@ -98,7 +97,7 @@ public class CompetitionNodeResult extends ActionResponse implements Streamable 
         super.readFrom(in);
         competitionName = in.readString();
         nodeName = in.readString();
-        totalIterations = in.readVInt();
+        requestedIterations = in.readVInt();
         completedIterations = in.readVInt();
         totalExecutedQueries = in.readVInt();
         warmUpTime = in.readVLong();
@@ -115,7 +114,7 @@ public class CompetitionNodeResult extends ActionResponse implements Streamable 
         super.writeTo(out);
         out.writeString(competitionName);
         out.writeString(nodeName);
-        out.writeVInt(totalIterations);
+        out.writeVInt(requestedIterations);
         out.writeVInt(completedIterations);
         out.writeVInt(totalExecutedQueries);
         out.writeVLong(warmUpTime);

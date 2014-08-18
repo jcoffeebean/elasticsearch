@@ -348,11 +348,11 @@ public class BenchmarkIntegrationTest extends AbstractBenchmarkTest {
 
             assertThat(nodeResult.nodeName(), notNullValue());
 
-            assertThat(nodeResult.totalIterations(), equalTo(requestedSettings.iterations()));
+            assertThat(nodeResult.requestedIterations(), equalTo(requestedSettings.iterations()));
             if (strict) {
                 assertThat(nodeResult.completedIterations(), equalTo(requestedSettings.iterations()));
                 final int expectedQueryCount = requestedSettings.multiplier() *
-                        nodeResult.totalIterations() * requestedSettings.searchRequests().size();
+                        nodeResult.requestedIterations() * requestedSettings.searchRequests().size();
                 assertThat(nodeResult.totalExecutedQueries(), equalTo(expectedQueryCount));
                 assertThat(nodeResult.iterations().size(), equalTo(requestedSettings.iterations()));
             }
@@ -386,8 +386,8 @@ public class BenchmarkIntegrationTest extends AbstractBenchmarkTest {
         assertThat(summary.getMillisPerHit(), greaterThanOrEqualTo(0.0));
         assertThat(summary.getAvgWarmupTime(), greaterThanOrEqualTo(0.0));
         if (strict) {
-            assertThat((int) summary.getTotalIterations(), equalTo(requestedSettings.iterations() * summary.nodeResults().size()));
-            assertThat((int) summary.getCompletedIterations(), equalTo(requestedSettings.iterations() * summary.nodeResults().size()));
+            assertThat((int) summary.getTotalRequestedIterations(), equalTo(requestedSettings.iterations() * summary.nodeResults().size()));
+            assertThat((int) summary.getTotalCompletedIterations(), equalTo(requestedSettings.iterations() * summary.nodeResults().size()));
             assertThat((int) summary.getTotalQueries(), equalTo(requestedSettings.iterations() * requestedSettings.multiplier() *
                     requestedSettings.searchRequests().size() * summary.nodeResults().size()));
             validatePercentiles(summary.getPercentileValues());

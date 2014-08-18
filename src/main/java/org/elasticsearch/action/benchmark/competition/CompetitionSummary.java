@@ -51,8 +51,8 @@ public class CompetitionSummary implements ToXContent {
     private long max = 0;
     private long totalTime = 0;
     private long sumTotalHits = 0;
-    private long totalIterations = 0;
-    private long completedIterations = 0;
+    private long totalRequestedIterations = 0;
+    private long totalCompletedIterations = 0;
     private long totalQueries = 0;
     private double avgWarmupTime = 0;
     private int concurrency = 0;
@@ -89,16 +89,16 @@ public class CompetitionSummary implements ToXContent {
      */
     public void computeSummaryStatistics() {
 
+        clear();
         long totalWarmupTime = 0;
         final SinglePassStatistics single = new SinglePassStatistics();
-
         final List<CompetitionNodeResult> results = ImmutableList.copyOf(nodeResults);
 
         for (CompetitionNodeResult nodeResult : results) {
 
             totalWarmupTime += nodeResult.warmUpTime();
-            totalIterations += nodeResult.totalIterations();
-            completedIterations += nodeResult.completedIterations();
+            totalRequestedIterations += nodeResult.requestedIterations();
+            totalCompletedIterations += nodeResult.completedIterations();
 
             // only calculate statistics for iterations completed thus far
             for (int i = 0; i < nodeResult.completedIterations(); i++) {
@@ -162,8 +162,8 @@ public class CompetitionSummary implements ToXContent {
         }
         builder.endArray();
 
-        builder.field(Fields.TOTAL_ITERATIONS, totalIterations);
-        builder.field(Fields.COMPLETED_ITERATIONS, completedIterations);
+        builder.field(Fields.TOTAL_ITERATIONS, totalRequestedIterations);
+        builder.field(Fields.COMPLETED_ITERATIONS, totalCompletedIterations);
         builder.field(Fields.TOTAL_QUERIES, totalQueries);
         builder.field(Fields.CONCURRENCY, concurrency);
         builder.field(Fields.MULTIPLIER, multiplier);
@@ -185,9 +185,9 @@ public class CompetitionSummary implements ToXContent {
 
         builder.endObject();
 
-        if (totalIterations > 0 && slowest.size() > 0) {
+        if (totalRequestedIterations > 0 && slowest.size() > 0) {
             builder.startArray(Fields.SLOWEST);
-            int n = (int) (slowest.size() / totalIterations);
+            int n = (int) (slowest.size() / totalRequestedIterations);
             for (int i = 0; i < n; i++) {
                 builder.startObject();
                 builder.field(Fields.NODE, slowest.get(i).v1());
@@ -245,16 +245,16 @@ public class CompetitionSummary implements ToXContent {
      * Number of requested iterations
      * @return  Number of requested iterations
      */
-    public long getTotalIterations() {
-        return totalIterations;
+    public long getTotalRequestedIterations() {
+        return totalRequestedIterations;
     }
 
     /**
      * Number of iterations actually completed
      * @return  Number of iterations actually completed
      */
-    public long getCompletedIterations() {
-        return completedIterations;
+    public long getTotalCompletedIterations() {
+        return totalCompletedIterations;
     }
 
     /**
@@ -345,11 +345,19 @@ public class CompetitionSummary implements ToXContent {
         return slowest;
     }
 
+    private void clear() {
+        totalQueries = 0;
+        totalTime = 0;
+        sumTotalHits = 0;
+        totalRequestedIterations = 0;
+        totalCompletedIterations = 0;
+    }
+
     static final class Fields {
         static final XContentBuilderString SUMMARY = new XContentBuilderString("summary");
-        static final XContentBuilderString NODES = new XContentBuilderString("nodes");
-        static final XContentBuilderString TOTAL_ITERATIONS = new XContentBuilderString("total_iterations");
-        static final XContentBuilderString COMPLETED_ITERATIONS = new XContentBuilderString("completed_iterations");
+        static final XContentBuilderString NODES = new XContentBuilderString("executor_nodes");
+        static final XContentBuilderString TOTAL_ITERATIONS = new XContentBuilderString("total_requested_iterations");
+        static final XContentBuilderString COMPLETED_ITERATIONS = new XContentBuilderString("total_completed_iterations");
         static final XContentBuilderString TOTAL_QUERIES = new XContentBuilderString("total_queries");
         static final XContentBuilderString CONCURRENCY = new XContentBuilderString("concurrency");
         static final XContentBuilderString MULTIPLIER = new XContentBuilderString("multiplier");
