@@ -358,7 +358,7 @@ public class CompetitionSummary implements ToXContent {
         static final XContentBuilderString NODES = new XContentBuilderString("executor_nodes");
         static final XContentBuilderString TOTAL_ITERATIONS = new XContentBuilderString("total_requested_iterations");
         static final XContentBuilderString COMPLETED_ITERATIONS = new XContentBuilderString("total_completed_iterations");
-        static final XContentBuilderString TOTAL_QUERIES = new XContentBuilderString("total_queries");
+        static final XContentBuilderString TOTAL_QUERIES = new XContentBuilderString("total_completed_queries");
         static final XContentBuilderString CONCURRENCY = new XContentBuilderString("concurrency");
         static final XContentBuilderString MULTIPLIER = new XContentBuilderString("multiplier");
         static final XContentBuilderString AVG_WARMUP_TIME = new XContentBuilderString("avg_warmup_time");
