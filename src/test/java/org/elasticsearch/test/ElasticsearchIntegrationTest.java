@@ -95,6 +95,7 @@ import org.elasticsearch.indices.cache.query.IndicesQueryCache;
 import org.elasticsearch.indices.recovery.RecoverySettings;
 import org.elasticsearch.indices.store.IndicesStore;
 import org.elasticsearch.rest.RestStatus;
+import org.elasticsearch.script.ScriptService;
 import org.elasticsearch.search.SearchService;
 import org.elasticsearch.test.client.RandomizingClient;
 import org.hamcrest.Matchers;
@@ -415,6 +416,7 @@ public abstract class ElasticsearchIntegrationTest extends ElasticsearchTestCase
         setRandomMerge(random, builder);
         setRandomTranslogSettings(random, builder);
         setRandomNormsLoading(random, builder);
+        setRandomScriptingSettings(random, builder);
         if (random.nextBoolean()) {
             if (random.nextInt(10) == 0) { // do something crazy slow here
                 builder.put(IndicesStore.INDICES_STORE_THROTTLE_MAX_BYTES_PER_SEC, new ByteSizeValue(RandomInts.randomIntBetween(random, 1, 10), ByteSizeUnit.MB));
@@ -455,6 +457,16 @@ public abstract class ElasticsearchIntegrationTest extends ElasticsearchTestCase
                     IndexFieldDataService.FIELDDATA_CACHE_VALUE_SOFT));
         }
         
+        return builder;
+    }
+
+    private static ImmutableSettings.Builder setRandomScriptingSettings(Random random, ImmutableSettings.Builder builder) {
+        if (random.nextBoolean()) {
+            builder.put(ScriptService.SCRIPT_CACHE_SIZE_SETTING, RandomInts.randomIntBetween(random, -100, 2000));
+        }
+        if (random.nextBoolean()) {
+            builder.put(ScriptService.SCRIPT_CACHE_EXPIRE_SETTING, TimeValue.timeValueMillis(RandomInts.randomIntBetween(random, 750, 10000000)));
+        }
         return builder;
     }
 
