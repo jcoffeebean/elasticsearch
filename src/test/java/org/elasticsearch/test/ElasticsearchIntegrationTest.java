@@ -75,9 +75,10 @@ import org.elasticsearch.common.xcontent.support.XContentMapValues;
 import org.elasticsearch.discovery.zen.elect.ElectMasterService;
 import org.elasticsearch.index.codec.CodecService;
 import org.elasticsearch.index.fielddata.FieldDataType;
+import org.elasticsearch.index.fielddata.IndexFieldDataService;
 import org.elasticsearch.index.mapper.DocumentMapper;
-import org.elasticsearch.index.mapper.FieldMapper.Loading;
 import org.elasticsearch.index.mapper.FieldMapper;
+import org.elasticsearch.index.mapper.FieldMapper.Loading;
 import org.elasticsearch.index.mapper.internal.FieldNamesFieldMapper;
 import org.elasticsearch.index.mapper.internal.IdFieldMapper;
 import org.elasticsearch.index.merge.policy.*;
@@ -447,6 +448,13 @@ public abstract class ElasticsearchIntegrationTest extends ElasticsearchTestCase
             builder.put(IndicesQueryCache.INDEX_CACHE_QUERY_ENABLED, random.nextBoolean());
         }
 
+        if (random.nextBoolean()) {
+            builder.put(IndexFieldDataService.FIELDDATA_CACHE_KEY, randomFrom(
+                    IndexFieldDataService.FIELDDATA_CACHE_VALUE_NODE,
+                    IndexFieldDataService.FIELDDATA_CACHE_VALUE_RESIDENT,
+                    IndexFieldDataService.FIELDDATA_CACHE_VALUE_SOFT));
+        }
+        
         return builder;
     }
 
