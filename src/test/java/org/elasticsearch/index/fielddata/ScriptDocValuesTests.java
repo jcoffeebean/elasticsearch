@@ -70,7 +70,10 @@ public class ScriptDocValuesTests extends ElasticsearchTestCase {
         final double lon2 = randomLon();
         final MultiGeoPointValues values = wrap(new GeoPoint(lat1, lon1), new GeoPoint(lat2, lon2));
         final ScriptDocValues.GeoPoints script = new ScriptDocValues.GeoPoints(values);
+        script.setNextDocId(1);
+        assertEquals(true, script.isEmpty());
         script.setNextDocId(0);
+        assertEquals(false, script.isEmpty());
         assertEquals(new GeoPoint(lat1, lon1), script.getValue());
         assertEquals(Arrays.asList(new GeoPoint(lat1, lon1), new GeoPoint(lat2, lon2)), script.getValues());
         assertEquals(lat1, script.getLat(), 0);
