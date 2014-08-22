@@ -34,7 +34,7 @@ import static org.elasticsearch.test.hamcrest.ElasticsearchAssertions.assertHitC
 public class TermsFilterIntegrationTests extends ElasticsearchIntegrationTest {
 
     private final ESLogger logger = Loggers.getLogger(TermsFilterIntegrationTests.class);
-    
+
     public void testExecution() throws Exception {
         assertAcked(prepareCreate("test").addMapping("type", "f", "type=string"));
         ensureYellow();
@@ -42,26 +42,29 @@ public class TermsFilterIntegrationTests extends ElasticsearchIntegrationTest {
                 client().prepareIndex("test", "type").setSource("f", new String[] {"a", "b", "c"}),
                 client().prepareIndex("test", "type").setSource("f", "b"));
 
-        for (String execution : Arrays.asList(
-                EXECUTION_VALUE_PLAIN,
-                EXECUTION_VALUE_FIELDDATA,
-                EXECUTION_VALUE_BOOL,
-                EXECUTION_VALUE_BOOL_NOCACHE,
-                EXECUTION_VALUE_OR,
-                EXECUTION_VALUE_OR_NOCACHE)) {
-            logger.info("Execution=" + execution);
-            assertHitCount(client().prepareCount("test").setQuery(
-                    QueryBuilders.filteredQuery(QueryBuilders.matchAllQuery(),
-                            FilterBuilders.termsFilter("f", "a", "b").execution(execution))).get(), 2L);
-        }
+        for (boolean cache : new boolean[] {false, true}) {
+            logger.info("cache=" + cache);
+            for (String execution : Arrays.asList(
+                    EXECUTION_VALUE_PLAIN,
+                    EXECUTION_VALUE_FIELDDATA,
+                    EXECUTION_VALUE_BOOL,
+                    EXECUTION_VALUE_BOOL_NOCACHE,
+                    EXECUTION_VALUE_OR,
+                    EXECUTION_VALUE_OR_NOCACHE)) {
+                logger.info("Execution=" + execution);
+                assertHitCount(client().prepareCount("test").setQuery(
+                        QueryBuilders.filteredQuery(QueryBuilders.matchAllQuery(),
+                                FilterBuilders.termsFilter("f", "a", "b").execution(execution).cache(cache))).get(), 2L);
+            }
 
-        for (String execution : Arrays.asList(
-                EXECUTION_VALUE_AND,
-                EXECUTION_VALUE_AND_NOCACHE)) {
-            logger.info("Execution=" + execution);
-            assertHitCount(client().prepareCount("test").setQuery(
-                    QueryBuilders.filteredQuery(QueryBuilders.matchAllQuery(),
-                            FilterBuilders.termsFilter("f", "a", "b").execution(execution))).get(), 1L);
+            for (String execution : Arrays.asList(
+                    EXECUTION_VALUE_AND,
+                    EXECUTION_VALUE_AND_NOCACHE)) {
+                logger.info("Execution=" + execution);
+                assertHitCount(client().prepareCount("test").setQuery(
+                        QueryBuilders.filteredQuery(QueryBuilders.matchAllQuery(),
+                                FilterBuilders.termsFilter("f", "a", "b").execution(execution).cache(cache))).get(), 1L);
+            }
         }
     }
 
