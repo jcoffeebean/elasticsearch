@@ -79,8 +79,7 @@ import org.elasticsearch.index.fielddata.IndexFieldDataService;
 import org.elasticsearch.index.mapper.DocumentMapper;
 import org.elasticsearch.index.mapper.FieldMapper;
 import org.elasticsearch.index.mapper.FieldMapper.Loading;
-import org.elasticsearch.index.mapper.internal.FieldNamesFieldMapper;
-import org.elasticsearch.index.mapper.internal.IdFieldMapper;
+import org.elasticsearch.index.mapper.internal.*;
 import org.elasticsearch.index.merge.policy.*;
 import org.elasticsearch.index.merge.scheduler.ConcurrentMergeSchedulerProvider;
 import org.elasticsearch.index.merge.scheduler.MergeSchedulerModule;
@@ -338,6 +337,29 @@ public abstract class ElasticsearchIntegrationTest extends ElasticsearchTestCase
                 if (randomBoolean()) {
                     mappings.startObject(IdFieldMapper.NAME)
                             .field("index", randomFrom("not_analyzed", "no"))
+                            .endObject();
+                }
+                if (randomBoolean()) {
+                    mappings.startObject(TimestampFieldMapper.NAME)
+                            .field("enabled", randomBoolean())
+                            .startObject("fielddata")
+                            .field(FieldDataType.FORMAT_KEY, randomFrom("array", "doc_values"))
+                            .endObject()
+                            .endObject();
+                }
+                if (randomBoolean()) {
+                    mappings.startObject(SizeFieldMapper.NAME)
+                            .field("enabled", randomBoolean())
+                            .endObject();
+                }
+                if (randomBoolean()) {
+                    mappings.startObject(AllFieldMapper.NAME)
+                            .field("auto_boost", true)
+                            .endObject();
+                }
+                if (randomBoolean()) {
+                    mappings.startObject(SourceFieldMapper.NAME)
+                            .field("compress", randomBoolean())
                             .endObject();
                 }
                 if (compatibilityVersion().onOrAfter(Version.V_1_3_0)) {
